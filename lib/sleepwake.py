@@ -87,7 +87,7 @@ def _filter_short_sleep_periods(wake_periods_iter,
 
 def _iter_filtered_wake_periods():
     with _command_context('pmset', '-g', 'log') as process:
-        stdout = io.TextIOWrapper(io.BufferedReader(process.stdout), 'utf-8')
+        stdout = io.TextIOWrapper(io.BufferedReader(process.stdout), 'latin-1')
 
         yield from _filter_short_sleep_periods(
             _filter_short_wake_periods(
