@@ -9,8 +9,7 @@ from .util import log, format_date, format_interval
 
 
 class HakunaSession:
-    # Fucking shit pytz resolves Europe/Zurich to some fucking wierd time zone "BMT", with a GMT offset of 30 minutes. Fuck me.
-    _timezone = timezone('Europe/Berlin')
+    _timezone = timezone('Europe/Zurich')
 
     def __init__(self, base_uri, username, password):
         self._session = session()

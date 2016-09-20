@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 import contextlib
 import enum
 import io
@@ -39,7 +37,6 @@ def _iter_events(lines_iter):
         type = _EventType.__members__.get(fields[26:].strip().lower())
 
         if type is not None:
-            # print(time, type)
             yield time, type
 
 
@@ -80,7 +77,7 @@ def _filter_short_sleep_periods(wake_periods_iter, *, min_duration):
             else:
                 previous_period = previous_a, current_b
 
-    if not previous_period is None:
+    if previous_period is not None:
         yield previous_period
 
 
