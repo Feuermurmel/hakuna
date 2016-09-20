@@ -1,11 +1,12 @@
 #! /usr/bin/env python3
 
 import contextlib
-import datetime
 import enum
 import io
 import subprocess
 import itertools
+
+from datetime import datetime, timedelta
 
 
 @contextlib.contextmanager
@@ -29,7 +30,7 @@ def _iter_events(lines_iter):
         fields, *_ = i.split('\t')
 
         try:
-            time = datetime.datetime.strptime(
+            time = datetime.strptime(
                 fields[:25],
                 '%Y-%m-%d %H:%M:%S %z')
         except ValueError:
@@ -56,15 +57,13 @@ def _iter_wake_periods(events_iter):
                 last_wake_time = time
 
 
-def _filter_short_wake_periods(wake_periods_iter,
-    min_duration=datetime.timedelta(minutes=10)):
+def _filter_short_wake_periods(wake_periods_iter, *, min_duration):
     for a, b in wake_periods_iter:
         if b - a > min_duration:
             yield a, b
 
 
-def _filter_short_sleep_periods(wake_periods_iter,
-    min_duration=datetime.timedelta(minutes=10)):
+def _filter_short_sleep_periods(wake_periods_iter, *, min_duration):
     previous_period = None
 
     for i in wake_periods_iter:
@@ -92,7 +91,9 @@ def _iter_filtered_wake_periods():
         yield from _filter_short_sleep_periods(
             _filter_short_wake_periods(
                 _iter_wake_periods(
-                    _iter_events(stdout))))
+                    _iter_events(stdout)),
+                min_duration=timedelta(minutes=10)),
+            min_duration=timedelta(minutes=30))
 
         yield from _iter_wake_periods(_iter_events(stdout))
 
